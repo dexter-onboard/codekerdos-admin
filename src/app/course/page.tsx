@@ -25,7 +25,7 @@ export interface Course {
 
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Grid, Typography, List, ListItem, ListItemText } from '@mui/material';
-import { AdminResponse } from '../Auth/signup/page';
+import { AdminResponse } from '../signup/page';
 
 const CourseForm: React.FC<{ onSubmit: (course: Course) => void }> = ({ onSubmit }) => {
 

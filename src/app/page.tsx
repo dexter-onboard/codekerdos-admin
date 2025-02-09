@@ -1,20 +1,15 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppBar, Toolbar, Typography, Button, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import CoursePage from './course/page';
-import SignIn from './Auth/signin/page';
+import SignIn from './signin/page';
+import { AdminResponse } from './signup/page';
 
-export interface Admin {
-  email: string;
-  password: string;
-  phoneNumber: string;
-}
-
-export const Navbar: React.FC<{user: Admin}> = ({ user }: {user: Admin}) => {
+export const Navbar: React.FC<{ user: AdminResponse }> = ({ user }) => {
   const router = useRouter();
 
   const handleNavigation = (path: string) => {
@@ -39,22 +34,38 @@ export const Navbar: React.FC<{user: Admin}> = ({ user }: {user: Admin}) => {
         <IconButton color="inherit">
           <AccountCircle />
           <Typography variant="body1" style={{ marginLeft: 8 }}>
-            User Name
+            {user.admin.email}
           </Typography>
         </IconButton>
-        <Button color='inherit' onClick={() => {console.log("logout")}} > Log Out </Button>
+        <Button color="inherit" onClick={() => { console.log("logout") }}> Log Out </Button>
       </Toolbar>
     </AppBar>
   );
 };
 
 export default function Home() {
+  const [user, setUser] = useState<AdminResponse>({ token: '', admin: { email: '', phoneNumber: '', "_id": '', "__v": 0, isSuperAdmin: false } });
+  const router = useRouter();
 
-  const [user, setUser] = useState<Admin>({email: "", password: "", phoneNumber: ""});
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    } else {
+      router.push('/Auth/signin');
+    }
+  }, [router]);
 
   return (
     <div>
-      {user ? <><Navbar user={user} /><CoursePage /></>:  <SignIn/>}
+      {user.admin.email ? (
+        <>
+          <Navbar user={user} />
+          <CoursePage />
+        </>
+      ) : (
+        <SignIn />
+      )}
     </div>
   );
 }

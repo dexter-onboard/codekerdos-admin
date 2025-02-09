@@ -27,7 +27,7 @@ export interface LiveClass  {
 
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Grid, Typography, List, ListItem, ListItemText } from '@mui/material';
-import { AdminResponse } from '../Auth/signup/page';
+import { AdminResponse } from '../signup/page';
 
 const LiveClassForm: React.FC<{ onSubmit: (liveClass: LiveClass) => void }> = ({ onSubmit }) => {
 
