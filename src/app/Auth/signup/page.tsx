@@ -1,17 +1,52 @@
+'use client'
+
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
+
+export type AdminResponse = { token: string, admin: { email: string, phoneNumber: string, "_id": string, "__v": number, isSuperAdmin: boolean } }
 
 const Signup: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
 
-    const handleSubmit = (event: React.FormEvent) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         // Add signup logic here
         console.log('Email:', email);
         console.log('Password:', password);
         console.log('Confirm Password:', confirmPassword);
+        console.log('Phone Number:', phoneNumber);
+
+        // Send the data to the server
+        const response = await fetch(`${process.env.API_URL}/auth/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password, confirmPassword, phoneNumber }),
+        });
+
+        // Check if the request was successful
+
+        if (response.ok) {
+            // Redirect the user to the login page
+            const data : AdminResponse  = await response.json();
+            localStorage.setItem('user', JSON.stringify(data));
+            window.location.href = '/login';
+        } else {
+            // Handle the error
+            console.error('Failed to sign up');
+        }
+
+        // Clear the form
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        setPhoneNumber('');
+
+
     };
 
     return (
@@ -33,6 +68,19 @@ const Signup: React.FC = () => {
                         autoFocus
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <TextField
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="phoneNumber"
+                        label="Phone Number"
+                        name="phoneNumber"
+                        autoComplete="phone-number"
+                        autoFocus
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
                     />
                     <TextField
                         variant="outlined"

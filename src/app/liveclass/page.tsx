@@ -1,3 +1,4 @@
+'use client'
 export interface Recording  {title: string; link: string};
 
 export interface Assignment  {title: string; link: string};
@@ -24,10 +25,27 @@ export interface LiveClass  {
 }
 
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField, Button, Grid, Typography, List, ListItem, ListItemText } from '@mui/material';
+import { AdminResponse } from '../Auth/signup/page';
 
 const LiveClassForm: React.FC<{ onSubmit: (liveClass: LiveClass) => void }> = ({ onSubmit }) => {
+
+      const [user, setUser] = useState<AdminResponse | null>(null);
+  
+
+   useEffect(() => {
+          const user: AdminResponse | null = JSON.parse(localStorage.getItem('user') || '');
+  
+          if (!user) {
+              window.location.href = '/login';
+          }
+  
+          setUser(user);
+  
+  
+      }, [])
+
   const [liveClass, setLiveClass] = useState<LiveClass>({
     title: '',
     description: '',

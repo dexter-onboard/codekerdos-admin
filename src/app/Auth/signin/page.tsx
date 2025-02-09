@@ -1,7 +1,10 @@
+'use client'
+
 import React, { useState } from 'react';
-import { Avatar, Button, TextField, FormControlLabel, Checkbox, Link, Grid, Box, Typography, Container } from '@mui/material';
+import { Avatar, Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typography, Container } from '@mui/material';
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Link from 'next/link';
 
 const theme = createTheme();
 
@@ -9,10 +12,30 @@ export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         // Handle sign in logic here
         console.log({ email, password });
+
+        // Send the data to the server
+        const response = await fetch(`${process.env.API_URL}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+
+        // Check if the request was successful
+
+        if (response.ok) {
+            // Redirect the user to the login page
+            window.location.href = '/course';
+        } else {
+            // Handle the error
+            console.error('Failed to sign up');
+        }
+
     };
 
     return (
@@ -70,13 +93,8 @@ export default function SignIn() {
                             Sign In
                         </Button>
                         <Grid container>
-                            <Grid item xs>
-                                <Link href="#" variant="body2">
-                                    Forgot password?
-                                </Link>
-                            </Grid>
                             <Grid item>
-                                <Link href="#" variant="body2">
+                                <Link href={'/signup'} passHref>
                                     {"Don't have an account? Sign Up"}
                                 </Link>
                             </Grid>
