@@ -9,12 +9,20 @@ import CoursePage from './course/page';
 import SignIn from './signin/page';
 import { AdminResponse } from './signup/page';
 
-export const Navbar: React.FC<{ user: AdminResponse }> = ({ user }) => {
+export const Navbar: React.FC<{ user: AdminResponse | null }> = ({ user }) => {
   const router = useRouter();
 
   const handleNavigation = (path: string) => {
     router.push(path);
   };
+
+  useEffect(() => {
+
+    if (!user) {
+      router.push('/signin');
+    }
+
+  }, [user])
 
   return (
     <AppBar position="static">
@@ -34,7 +42,7 @@ export const Navbar: React.FC<{ user: AdminResponse }> = ({ user }) => {
         <IconButton color="inherit">
           <AccountCircle />
           <Typography variant="body1" style={{ marginLeft: 8 }}>
-            {user.admin.email}
+            {user?.admin.email || 'User'}
           </Typography>
         </IconButton>
         <Button color="inherit" onClick={() => { console.log("logout") }}> Log Out </Button>
@@ -52,7 +60,7 @@ export default function Home() {
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     } else {
-      router.push('/Auth/signin');
+      router.push('/signin');
     }
   }, [router]);
 

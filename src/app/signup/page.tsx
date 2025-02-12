@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import { Container, TextField, Button, Typography, Box } from '@mui/material';
+import { useRouter } from 'next/navigation';
 
 export type AdminResponse = { token: string, admin: { email: string, phoneNumber: string, "_id": string, "__v": number, isSuperAdmin: boolean } }
 
 const Signup: React.FC = () => {
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,7 +22,7 @@ const Signup: React.FC = () => {
         console.log('Phone Number:', phoneNumber);
 
         // Send the data to the server
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -33,8 +35,10 @@ const Signup: React.FC = () => {
         if (response.ok) {
             // Redirect the user to the login page
             const data : AdminResponse  = await response.json();
-            localStorage.setItem('user', JSON.stringify(data));
-            window.location.href = '/login';
+            if (window) {
+                localStorage.setItem('user', JSON.stringify(data));
+                router.push('/signin');
+            }
         } else {
             // Handle the error
             console.error('Failed to sign up');
@@ -53,7 +57,7 @@ const Signup: React.FC = () => {
         <Container maxWidth="sm">
             <Box sx={{ mt: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <Typography component="h1" variant="h5">
-                    Sign Up
+                    CodeKerdos Sign Up
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                     <TextField

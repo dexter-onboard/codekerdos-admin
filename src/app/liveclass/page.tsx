@@ -28,6 +28,7 @@ export interface LiveClass  {
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Grid, Typography, List, ListItem, ListItemText } from '@mui/material';
 import { AdminResponse } from '../signup/page';
+import { Navbar } from '../page';
 
 const LiveClassForm: React.FC<{ onSubmit: (liveClass: LiveClass) => void }> = ({ onSubmit }) => {
 
@@ -69,6 +70,8 @@ const LiveClassForm: React.FC<{ onSubmit: (liveClass: LiveClass) => void }> = ({
   };
 
   return (
+    <>
+    <Navbar user={user} />
     <form onSubmit={handleSubmit}>
       <Typography variant="h6">Create Live Class</Typography>
       <Grid container spacing={2}>
@@ -145,6 +148,7 @@ const LiveClassForm: React.FC<{ onSubmit: (liveClass: LiveClass) => void }> = ({
         </Grid>
       </Grid>
     </form>
+    </>
   );
 };
 

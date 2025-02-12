@@ -5,20 +5,24 @@ import { Avatar, Button, TextField, FormControlLabel, Checkbox, Grid, Box, Typog
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Link from 'next/link';
+import { AdminResponse } from '../signup/page';
+import { useRouter } from 'next/navigation';
 
 const theme = createTheme();
 
 export default function SignIn() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const router = useRouter();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        
         event.preventDefault();
         // Handle sign in logic here
         console.log({ email, password });
 
         // Send the data to the server
-        const response = await fetch(`${process.env.API_URL}/auth/login`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -30,7 +34,13 @@ export default function SignIn() {
 
         if (response.ok) {
             // Redirect the user to the login page
-            window.location.href = '/course';
+            const data : AdminResponse  = await response.json();
+            if (window) {
+                console.log("setting local storage\n\n", data)
+                localStorage.setItem('user', JSON.stringify(data));
+                router.push('/course');
+
+            }
         } else {
             // Handle the error
             console.error('Failed to sign up');
@@ -94,8 +104,8 @@ export default function SignIn() {
                         </Button>
                         <Grid container>
                             <Grid item>
-                                <Link href={'/signup'}>
-                                    {"Don't have an account? Sign Up"}
+                                <Link href={'/'}>
+                                    {"Don't have an account? Contact Admin"}
                                 </Link>
                             </Grid>
                         </Grid>

@@ -26,6 +26,7 @@ export interface Course {
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Grid, Typography, List, ListItem, ListItemText } from '@mui/material';
 import { AdminResponse } from '../signup/page';
+import { Navbar } from '../page';
 
 const CourseForm: React.FC<{ onSubmit: (course: Course) => void }> = ({ onSubmit }) => {
 
@@ -124,8 +125,24 @@ const CoursePage: React.FC = () => {
         setCourses([...courses, course]);
     };
 
+    const [user, setUser] = useState<AdminResponse | null>(null);
+      
+    
+    useEffect(() => {
+            const user: AdminResponse | null = JSON.parse(localStorage.getItem('user') || '');
+    
+            if (!user) {
+                window.location.href = '/login';
+            }
+    
+            setUser(user);
+    
+    
+    }, [])
+
     return (
         <div>
+            <Navbar user={user} />
             <CourseForm onSubmit={handleAddCourse} />
             <CourseList courses={courses} />
         </div>
